@@ -1,5 +1,11 @@
 module.exports = isEmailValid
 
+/*
+ * @param {String} email
+ *
+ * Validates if a string is an email or not.
+ * Returns a boolean.
+ */
 function isEmailValid(email) {
   if (!email) return false
 
