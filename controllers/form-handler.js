@@ -18,6 +18,12 @@ module.exports = function(req, res) {
 
   try {
     const stringArray = parseFormData(data)
+
+    // If we didn't have any form data, don't send the email.
+    if (stringArray.length < 1) {
+      return req.status(400).send({ error: 'Empty form data.' })
+    }
+
     // TODO - format for HTML
 
     const emailOptions = {
