@@ -1,10 +1,11 @@
+const Promise = require('bluebird')
 const { isEmailValid, parseFormData } = require('../helpers')
 const Email = require('../services/email')
 
 module.exports = function(req, res) {
   const email = req.params.email
 
-  const { subject } = req.query
+  const { subject, confirmationEmail } = req.query
 
   if (!email) {
     return req.status(400).send({ error: 'Email required.' })
@@ -24,6 +25,8 @@ module.exports = function(req, res) {
       return req.status(400).send({ error: 'Empty form data.' })
     }
 
+    const promises = []
+
     // TODO - format for HTML
 
     const emailOptions = {
@@ -34,10 +37,24 @@ module.exports = function(req, res) {
     }
 
     const email = new Email(emailOptions)
+    promises.push(email.send())
 
-    email.send()
+    // If a valid confirmation email was passed, send it a confirmation email.
+    if (confirmationEmail && isEmailValid(confirmationEmail)) {
+      const confEmailOptions = {
+        to: confirmationEmail,
+        from: email,
+        subject: "We've Received Your Submission",
+        text: 'Thank you for contacting us, this email is to confirm that we have received your submission and we will contact you soon.'
+      }
+
+      const confEmail = new Email(confEmailOptions)
+      promises.push(confEmail.send())
+    }
+
+    Promise.all(promises)
       .then(() => res.status(200).send({ message: 'OK' }))
-      .catch(error => res.status(500).send({ message: 'Failed to send email.', error: error.message }))
+      .catch(error => res.status(500).send({ message: 'Failed to send email(s).', error: error.message }))
 
   } catch (error) {
     console.error('Failed to parse form data:', error)
