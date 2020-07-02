@@ -1,4 +1,5 @@
+const path = require('path')
+
 module.exports = function(req, res) {
-  // TODO - send HTML page.
-  res.send('Simple Form Backend')
+  res.sendFile(path.resolve('./static', 'index.html'))
 }
