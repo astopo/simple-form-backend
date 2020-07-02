@@ -15,4 +15,5 @@ const Controllers = require('./controllers')
 app.get('/', Controllers.Home)
 app.post('/:email', Controllers.FormHandler)
 
+// Start the server
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`))
