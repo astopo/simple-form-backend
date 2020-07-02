@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const ENV = Object.assign({}, process.env)
 
 const DEFAULTS = {
