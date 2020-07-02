@@ -13,6 +13,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const Controllers = require('./controllers')
 
 app.get('/', Controllers.Home)
-app.post('/', Controllers.FormHandler)
+app.post('/:email', Controllers.FormHandler)
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`))
