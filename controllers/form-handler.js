@@ -28,10 +28,12 @@ module.exports = function(req, res) {
 
     const emailOptions = {
       to: email,
-      body: stringArray.join('\n')
+      from: email,
+      subject: subject || 'New Form Submission',
+      text: stringArray.join('\n')
     }
 
-    const email = new Email({})
+    const email = new Email(emailOptions)
 
     email.send()
       .then(() => res.status(200).send({ message: 'OK' }))
