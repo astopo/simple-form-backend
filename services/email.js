@@ -1,19 +1,24 @@
 const Promise = require('bluebird')
-const nodemailer = require('nodemailer')
+const sgMail = require('@sendgrid/mail')
+
+const { SENDGRID_API_KEY } = require('../env')
+
+sgMail.setApiKey(SENDGRID_API_KEY)
 
 class Email {
-  constructor({ to, formData }) {
+  constructor({ to, from, text, html }) {
     this.transporter = nodemailer.createTransport()
+
+    this.data = {
+      to,
+      from,
+      text,
+      html
+    }
   }
 
-  send(data) {
-    return new Promise((resolve, reject) => {
-      this.transporter.sendMail(data, (error, info) => {
-        if (error) return reject(error)
-
-        resolve(info)
-      })
-    })
+  send() {
+    return sgMail.send(this.data)
   }
 }
 
