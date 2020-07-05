@@ -1,6 +1,8 @@
 const Promise = require('bluebird')
-const { isEmailValid, parseFormData } = require('../helpers')
+const { isEmailValid, parseFormData, textToHtml } = require('../helpers')
+
 const Email = require('../services/email')
+
 
 module.exports = function(req, res) {
   const accountEmail = req.params.email
@@ -33,13 +35,12 @@ module.exports = function(req, res) {
       to = toEmail
     }
 
-    // TODO - format for HTML
-
     const emailOptions = {
       to,
       from: accountEmail,
       subject: subject || 'New Form Submission',
-      text: stringArray.join('\n')
+      text: stringArray.join('\n'),
+      html: textToHtml(stringArray)
     }
 
     const email = new Email(emailOptions)
