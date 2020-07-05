@@ -3,15 +3,15 @@ const { isEmailValid, parseFormData } = require('../helpers')
 const Email = require('../services/email')
 
 module.exports = function(req, res) {
-  const email = req.params.email
+  const accountEmail = req.params.email
 
-  const { subject, confirmationEmail } = req.query
+  const { subject, confirmationEmail, toEmail } = req.query
 
-  if (!email) {
+  if (!accountEmail) {
     return req.status(400).send({ error: 'Email required.' })
   }
 
-  if (!isEmailValid(email)) {
+  if (!isEmailValid(accountEmail)) {
     return req.status(400).send({ error: 'Invalid email.' })
   }
 
@@ -27,11 +27,17 @@ module.exports = function(req, res) {
 
     const promises = []
 
+    let to = accountEmail
+
+    if (toEmail && isEmailValid(toEmail)) {
+      to = toEmail
+    }
+
     // TODO - format for HTML
 
     const emailOptions = {
-      to: email,
-      from: email,
+      to,
+      from: accountEmail,
       subject: subject || 'New Form Submission',
       text: stringArray.join('\n')
     }
@@ -43,7 +49,7 @@ module.exports = function(req, res) {
     if (confirmationEmail && isEmailValid(confirmationEmail)) {
       const confEmailOptions = {
         to: confirmationEmail,
-        from: email,
+        from: accountEmail,
         subject: "We've Received Your Submission",
         text: 'Thank you for contacting us, this email is to confirm that we have received your submission and we will contact you soon.'
       }
@@ -54,7 +60,11 @@ module.exports = function(req, res) {
 
     Promise.all(promises)
       .then(() => res.status(200).send({ message: 'OK' }))
-      .catch(error => res.status(500).send({ message: 'Failed to send email(s).', error: error.message }))
+      .catch(error => {
+        res.status(500).send({ message: 'Failed to send email(s).', error: error.message })
+
+        console.log(error)
+      })
 
   } catch (error) {
     console.error('Failed to parse form data:', error)
