@@ -6,14 +6,13 @@ const { SENDGRID_API_KEY } = require('../env')
 sgMail.setApiKey(SENDGRID_API_KEY)
 
 class Email {
-  constructor({ to, from, text, html }) {
-    this.transporter = nodemailer.createTransport()
-
+  constructor({ to, from, subject, text, html }) {
     this.data = {
       to,
       from,
+      subject,
       text,
-      html
+      html: html || text
     }
   }
 

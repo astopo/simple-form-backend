@@ -7,10 +7,12 @@ module.exports = parseFormData
  * returns an array of strings in the format `${key}: ${value}`
  */
 function parseFormData(formData) {
+  if (!formData) throw new Error('formData required.')
+
   const keys = Object.keys(formData)
 
   return keys.map(key => {
-    const value = formData[value]
+    const value = formData[key]
     return `${key}: ${value}`
   })
 }
