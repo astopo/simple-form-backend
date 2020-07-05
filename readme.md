@@ -53,3 +53,9 @@ name: Jerry
 phone: +1 123 1234
 
 Either the email `another@example.com` will have to be verified, or the domain `example.com` authenticated in SendGrid, otherwise this will fail.
+
+## With pm2
+
+`pm2 start index.js`
+
+All config is in `ecosystem.config.js`.
