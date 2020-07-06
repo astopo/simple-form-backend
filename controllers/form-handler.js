@@ -1,7 +1,9 @@
 const Promise = require('bluebird')
+const { HONEYPOT_KEY } = require('../env')
 const { isEmailValid, parseFormData, textToHtml } = require('../helpers')
 
 const Email = require('../services/email')
+
 
 
 module.exports = function(req, res) {
@@ -19,6 +21,19 @@ module.exports = function(req, res) {
 
   const data = req.body
 
+  // First validate that we don't have a bot submission
+  try {
+    const honeyPot = data[HONEYPOT_KEY]
+
+    if (honeyPot !== null) {
+      // This was a bot, just send it a good message anyway.
+      res.status(200).send({ message: 'OK' })
+    }
+  } catch (error) {
+    res.status(400).send({ message: 'Invalid payload.' })
+  }
+
+  // We have valid data, it's not a bot, so send the emails.
   try {
     const stringArray = parseFormData(data)
 
