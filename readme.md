@@ -18,9 +18,23 @@ yarn start
 
 ## Requirements
 
+Env vars: `SENDGRID_API_KEY` and `HONEYPOT_KEY`
+
+See details below.
+
+### SendGrid
+
 The mailer is integrated with [SendGrid](https://sendgrid.com), so you will need a SendGrid account and API key in order to be able to send emails.
 
 In addition, you will need to verify either a Single Sender or authenticate a domain on SendGrid.
+
+### Honey Pot
+
+In order to prevent bots from submitting the form, the form handler controller validates a honeypot key on the form data. More info can be found [here](https://dev.to/felipperegazio/how-to-create-a-simple-honeypot-to-protect-your-web-forms-from-spammers--25n8).
+
+The API will check the form data for whatever key is set in `HONEYPOT_KEY`, and the expected value of this key is `null`.
+
+If the API receives a value, it will return a 200 response, but will not send an email.
 
 ## API
 
