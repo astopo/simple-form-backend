@@ -29,6 +29,9 @@ module.exports = function(req, res) {
       // This was a bot, just send it a good message anyway.
       res.status(200).send({ message: 'OK' })
     }
+
+    // Then delete it, because it does not need to be included in the email.
+    delete data[HONEYPOT_KEY]
   } catch (error) {
     res.status(400).send({ message: 'Invalid payload.' })
   }
